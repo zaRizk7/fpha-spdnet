@@ -208,7 +208,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
-data
+
+# FPHA specific files
+dataset/
 Hand_pose_annotation_v1
 data_split_action_recognition
 logs/

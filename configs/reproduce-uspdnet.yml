@@ -1,7 +1,7 @@
 seed_everything: 0
 
 data:
-  h5_path: data/cov.h5
+  h5_path: dataset/cov.h5
   batch_size: 30
   num_workers: 0
 

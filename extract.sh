@@ -16,7 +16,7 @@ for i in "${!CONFIG_NAMES[@]}"; do
     read -r standardize estimator <<<"${CONFIG_VALUES[$i]}"
     python -m fpha_spdnet.data "$DATA_DIR" \
         --split_file "$SPLIT_FILE" \
-        --output_file "data/${name}.h5" \
+        --output_file "dataset/${name}.h5" \
         --standardize "$standardize" \
         --estimator "$estimator"
     sleep 2
