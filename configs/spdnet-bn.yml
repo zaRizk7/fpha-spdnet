@@ -12,6 +12,7 @@ model:
     num_spatials: [53, 43, 33]
     num_classes: 45
     eps: 1e-5
+    use_batch_norm: true
 
 trainer:
   max_epochs: 1500
