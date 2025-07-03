@@ -2,6 +2,9 @@
 
 export PYTHONWARNINGS="ignore"
 
+MODEL="spdnet-bn"
+
 clear
-rm -rf logs checkpoints
-python -m fpha_spdnet fit -c configs/reproduce-uspdnet.yml --seed_everything=0
+rm -rf logs/$MODEL/reproduction
+
+python -m fpha_spdnet fit -c configs/$MODEL.yml --seed_everything=42
