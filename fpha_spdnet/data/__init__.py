@@ -1,8 +1,8 @@
 import h5py
-import numpy as np
-import torch
 from lightning import LightningDataModule
+import numpy as np
 from sklearn.model_selection import check_cv
+import torch
 from torch.utils.data import DataLoader, Dataset
 
 __all__ = ["FPHADataset"]
@@ -65,7 +65,7 @@ class FPHADataset(Dataset):
         indices (list[int], optional): Sample indices to load. If None, use all.
     """
 
-    def __init__(self, h5_path: str, indices: list[int] = None):
+    def __init__(self, h5_path: str, indices: list[int] | None = None):
         self.h5_path = h5_path
         self._file = h5py.File(h5_path, "r")  # open once, close at __del__
 
@@ -77,11 +77,7 @@ class FPHADataset(Dataset):
         )
         self._matrix_size = self._file["x"].shape[1]  # Assuming shape (n_samples, d, d)
 
-        self.indices = (
-            np.asarray(indices)
-            if indices is not None
-            else np.arange(len(self.label_idx_all))
-        )
+        self.indices = np.asarray(indices) if indices is not None else np.arange(len(self.label_idx_all))
 
     def __len__(self):
         return len(self.indices)

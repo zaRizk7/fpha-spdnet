@@ -3,9 +3,9 @@ import os
 from typing import Optional, Tuple
 
 import h5py
+from jsonargparse import CLI
 import numpy as np
 import pandas as pd
-from jsonargparse import CLI
 from sklearn.covariance import EmpiricalCovariance as EmpCov
 from sklearn.covariance import LedoitWolf as LW
 from sklearn.preprocessing import StandardScaler
@@ -13,9 +13,7 @@ from sklearn.preprocessing import StandardScaler
 # Configure logger
 logger = logging.getLogger("hand_pose_pipeline")
 handler = logging.StreamHandler()
-formatter = logging.Formatter(
-    "[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-)
+formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
@@ -50,11 +48,7 @@ def load_hand_pose_covariances(
         logger.setLevel(logging.WARNING)
 
     scaler = StandardScaler(with_mean=False)
-    cov_estimator = (
-        LW(store_precision=False)
-        if estimator == "lw"
-        else EmpCov(store_precision=False)
-    )
+    cov_estimator = LW(store_precision=False) if estimator == "lw" else EmpCov(store_precision=False)
 
     subjects, recordings, label_names, cov_matrices = [], [], [], []
     total_found, total_missing = 0, 0
@@ -83,9 +77,7 @@ def load_hand_pose_covariances(
                     total_missing += 1
 
     x = np.stack(cov_matrices)
-    metadata = pd.DataFrame(
-        {"subject": subjects, "recording": recordings, "label_name": label_names}
-    )
+    metadata = pd.DataFrame({"subject": subjects, "recording": recordings, "label_name": label_names})
 
     logger.info(f"Found: {total_found} | Missing: {total_missing}")
     return x, metadata
@@ -127,7 +119,7 @@ def parse_train_split(
             try:
                 path, index = line.split(" ")
                 subject, label_name, recording = path.split("/")
-                index = int(index)
+                index = int(index)  # type: ignore[assignment]
             except ValueError:
                 continue
 
@@ -138,23 +130,19 @@ def parse_train_split(
             )
 
             label_idx[match] = index
-            is_train[match] = "Train" in current_split
+            is_train[match] = "Train" in current_split  # type: ignore[operator]
 
     metadata["is_train"] = is_train
     metadata["label_idx"] = label_idx
 
     logger.info(f"{np.sum(is_train)} training samples found.")
     logger.info(f"{np.sum(~is_train)} test samples found.")
-    logger.info(
-        f"{np.unique(label_idx[label_idx >= 0]).size} unique label indices assigned."
-    )
+    logger.info(f"{np.unique(label_idx[label_idx >= 0]).size} unique label indices assigned.")
 
     return metadata
 
 
-def assign_lexical_label_indices(
-    metadata: pd.DataFrame, verbose: bool = True
-) -> pd.DataFrame:
+def assign_lexical_label_indices(metadata: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
     """
     Assign label indices based on sorted lexical order of label names.
 
@@ -237,9 +225,7 @@ def main(
         metadata = parse_train_split(metadata, split_file, verbose)
     else:
         if verbose:
-            logger.warning(
-                "Split file not provided or not found. Skipping train/test split."
-            )
+            logger.warning("Split file not provided or not found. Skipping train/test split.")
         metadata = assign_lexical_label_indices(metadata, verbose)
 
     save_covariance_data_to_hdf5(output_file, x, metadata)
