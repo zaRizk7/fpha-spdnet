@@ -8,7 +8,7 @@ In this repository, I provide my attempt to reproduce [Wang et al. (2023)](https
   and [Engin et al. (2018)](https://www.ecva.net/papers/eccv_2018/papers_ECCV/papers/Melih_Engin_DeepKSPD_Learning_Kernel-matrix-based_ECCV_2018_paper.pdf), while [Wang et al. (2023)](https://doi.org/10.1016/j.neunet.2022.11.030) uses the same one used by [Huang et al. (2017)](https://arxiv.org/abs/1608.04233) from [Ionescu et al. (2015)](https://openaccess.thecvf.com/content_iccv_2015/papers/Ionescu_Matrix_Backpropagation_for_ICCV_2015_paper.pdf).
 - I used Riemannian Adam instead of SGD to ensure quick convergence.
 
-The results are quite far from the original paper's result, where I obtained:
+For U-SPDNet, the results are quite far from the original paper's result, where I obtained:
 |    Model   | Accuracy |
 | :--------- | :------: |
 |   SPDNet   |  0.8557  |
