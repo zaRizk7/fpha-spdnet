@@ -2,7 +2,7 @@
 
 In this repository, I provide my attempt to reproduce [Wang et al. (2023)](https://doi.org/10.1016/j.neunet.2022.11.030)'s result for both SPDNet and U-SPDNet on the FPHA dataset by [Garcia-Hernando et al. (2018)](https://guiggh.github.io/publications/first-person-hands/). It is expected that the result will not be the same as the one in the paper given that there are significant differences in implementation, including:
 - Programming language and frameworks, the original uses MATLAB and Manopt while my implementation uses Python, PyTorch and Geoopt.
-- Checkpointing objective is not given to provide how they select their results in the paper. The results shown will be based on the validation loss.
+- Checkpointing objective is not given to provide how they select their results in the paper. The results shown will be based on the validation accuracy.
 - The backprop used for the matrix ops (e.g., `expm`, `logm`, etc) in my code is based on the Daleckii-Krein
   theorem defined by [Brooks et al. (2019)](https://proceedings.neurips.cc/paper_files/paper/2019/file/6e69ebbfad976d4637bb4b39de261bf7-Paper.pdf)
   and [Engin et al. (2018)](https://www.ecva.net/papers/eccv_2018/papers_ECCV/papers/Melih_Engin_DeepKSPD_Learning_Kernel-matrix-based_ECCV_2018_paper.pdf), while [Wang et al. (2023)](https://doi.org/10.1016/j.neunet.2022.11.030) uses the same one used by [Huang et al. (2017)](https://arxiv.org/abs/1608.04233) from [Ionescu et al. (2015)](https://openaccess.thecvf.com/content_iccv_2015/papers/Ionescu_Matrix_Backpropagation_for_ICCV_2015_paper.pdf).
