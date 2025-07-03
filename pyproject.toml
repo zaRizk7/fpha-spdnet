@@ -1,8 +1,8 @@
 [project]
-name = "spdnet-fpha-reproduction"
+name = "fpha-spdnet"
 version = "0.1.0"
-description = "Preprocessing pipeline for hand pose annotation dataset using covariance features."
-authors = [{ name = "Your Name", email = "you@example.com" }]
+description = "Reproduction module for SPDNets on FPHA dataset."
+authors = [{ name = "Riza Rizky", email = "zarizky77@gmail.com" }]
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.9"
