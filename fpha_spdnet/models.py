@@ -1,10 +1,9 @@
 from lightning import LightningModule
-from spdnet import SPDNet as SPDNetBackbone, USPDNet as USPDNetBackbone
+from spdnet import SPDNet as SPDNetBackbone
+from spdnet import USPDNet as USPDNetBackbone
 from spdnet.metrics import distance
-
 from torch.nn.functional import binary_cross_entropy_with_logits as bce
 from torch.nn.functional import cross_entropy as ce
-from torch.nn.functional import mse_loss as mse
 from torchmetrics import Accuracy
 
 __all__ = ["SPDNet", "USPDNet"]
@@ -21,7 +20,6 @@ class SPDNet(LightningModule):
         rectify_last (bool): Whether to apply ReLU after final SPD layer.
         use_batch_norm (bool): Whether to apply batch normalization after SPD layers.
         eps (float): Small constant for clamping eigenvalues with ReEig.
-        trivialize (bool): Use trivialization for BiMap layer.
     """
 
     def __init__(
@@ -32,7 +30,6 @@ class SPDNet(LightningModule):
         rectify_last: bool = False,
         use_batch_norm: bool = False,
         eps: float = 1e-5,
-        trivialize: bool = False,
     ):
         super().__init__()
         self.save_hyperparameters()
@@ -43,7 +40,6 @@ class SPDNet(LightningModule):
             rectify_last=rectify_last,
             use_batch_norm=use_batch_norm,
             eps=eps,
-            trivialize=trivialize,
         )
 
         is_binary = num_classes == 1
@@ -88,7 +84,6 @@ class USPDNet(LightningModule):
         use_batch_norm (bool): Whether to apply batch normalization after SPD layers.
         eps (float): Small constant for clamping eigenvalues with ReEig.
         trade_off (float): Trade-off coefficient for reconstruction loss.
-        trivialize (bool): Use trivialization for BiMap layer.
     """
 
     def __init__(
