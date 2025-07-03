@@ -6,11 +6,12 @@ data:
   num_workers: 4
 
 model:
-  class_path: fpha_spdnet.models.SPDNet
+  class_path: fpha_spdnet.models.USPDNet
   init_args:
     matrix_size: 63
     num_spatials: [53, 43, 33]
     num_classes: 45
+    trade_off: 0.1
     eps: 1e-5
     use_batch_norm: true
 
@@ -22,7 +23,7 @@ trainer:
     class_path: lightning.pytorch.loggers.csv_logs.CSVLogger
     init_args:
       save_dir: logs
-      name: spdnet-bn
+      name: u-spdnet-bn
       version: reproduction
   callbacks:
     - class_path: lightning.pytorch.callbacks.ModelCheckpoint
@@ -31,7 +32,7 @@ trainer:
         mode: min
         save_top_k: 1
         filename: weight-{epoch:03d}
-        dirpath: logs/spdnet-bn/reproduction
+        dirpath: logs/u-spdnet-bn/reproduction
 
 optimizer:
   class_path: geoopt.optim.RiemannianAdam

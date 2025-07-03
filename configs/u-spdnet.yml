@@ -22,15 +22,16 @@ trainer:
     class_path: lightning.pytorch.loggers.csv_logs.CSVLogger
     init_args:
       save_dir: logs
-      name: reprod
+      name: u-spdnet
+      version: "reproduction"
   callbacks:
     - class_path: lightning.pytorch.callbacks.ModelCheckpoint
       init_args:
         monitor: val_loss
         mode: min
         save_top_k: 1
-        filename: best-{epoch:02d}-{val_loss:.4f}
-        dirpath: checkpoints/reprod
+        filename: weight-{epoch:03d}
+        dirpath: logs/u-spdnet/reproduction
 
 optimizer:
   class_path: geoopt.optim.RiemannianAdam
