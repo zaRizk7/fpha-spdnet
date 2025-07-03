@@ -6,12 +6,11 @@ data:
   num_workers: 4
 
 model:
-  class_path: fpha_spdnet.models.USPDNet
+  class_path: fpha_spdnet.models.SPDNet
   init_args:
     matrix_size: 63
     num_spatials: [53, 43, 33]
     num_classes: 45
-    trade_off: 0.1
     eps: 1e-5
 
 trainer:
