@@ -28,8 +28,8 @@ trainer:
   callbacks:
     - class_path: lightning.pytorch.callbacks.ModelCheckpoint
       init_args:
-        monitor: val_clf_loss
-        mode: min
+        monitor: val_accuracy
+        mode: max
         save_top_k: 1
         filename: weight-{epoch:03d}
         dirpath: logs/u-spdnet-bn/reproduction
