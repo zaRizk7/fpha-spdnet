@@ -1,0 +1,37 @@
+seed_everything: 0
+
+data:
+  h5_path: data/cov.h5
+  batch_size: 30
+  num_workers: 0
+
+model:
+  class_path: fpha_spdnet.models.USPDNet
+  init_args:
+    matrix_size: 63
+    num_spatials: [53, 43, 33]
+    num_classes: 45
+    trade_off: 0.1
+
+trainer:
+  max_epochs: 1500
+  accelerator: cpu
+  devices: 1
+  logger:
+    class_path: lightning.pytorch.loggers.csv_logs.CSVLogger
+    init_args:
+      save_dir: logs
+      name: reprod
+  callbacks:
+    - class_path: lightning.pytorch.callbacks.ModelCheckpoint
+      init_args:
+        monitor: val_loss
+        mode: min
+        save_top_k: 1
+        filename: best-{epoch:02d}-{val_loss:.4f}
+        dirpath: checkpoints/reprod
+
+optimizer:
+  class_path: geoopt.optim.RiemannianAdam
+  init_args:
+    lr: 1e-2
