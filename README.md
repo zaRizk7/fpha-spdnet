@@ -44,14 +44,18 @@ to extract the covariance/correlation, depending on your preference
 ```bash
 python -m fpha_spdnet.data ${DATA_DIR} \
   --split_file ${SPLIT_FILE} \
+  --output_file ${OUTPUT_FILE} \
   --standardize ${true|false} \
   --estimator ${emp|lw}
 ```
-The arguments' explanation are as follows:
+The arguments' explanation is as follows:
 - `${DATA_DIR}`: The directory for the hand pose coordinate, you may assume it is the `Hand_pose_annotation_v1` folder by default.
 - `--split_file ${SPLIT_FILE}`: The file to define the split used in FPHA, it is the `data_split_action_recognition.txt`.
+- `--output_file ${OUTPUT_FILE}`: The output path and filename for the preprocessed dataset.
 - `--standardize ${true|false}`: Whether you want to standardize the coordinate time series, if standardized, then it will produce correlation instead of covariance.
 - `--estimator ${emp|lw}`: The covariance estimator you want to apply, by default, I set it to empirical (`emp`) covariance, where if we to retain SPDness, we add `10^-3 * trace(M)` to the diagonal. Alternatively, you may use Ledoit-Wolf shrinkage (`lw`), which may have performance differences when training the SPDNets.
+
+If the code runs successfully, it will produce an `h5` file that can be loaded to train the model.
 
 # Training
 
