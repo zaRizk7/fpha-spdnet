@@ -1,3 +1,5 @@
+from functools import partial
+
 from lightning import LightningModule
 from spdnet import SPDNet as SPDNetBackbone
 from spdnet import USPDNet as USPDNetBackbone
@@ -5,6 +7,7 @@ from spdnet.metrics import distance
 from torch.nn.functional import binary_cross_entropy_with_logits as bce
 from torch.nn.functional import cross_entropy as ce
 from torchmetrics import Accuracy
+from torchmetrics import MeanMetric as Mean
 
 __all__ = ["SPDNet", "USPDNet"]
 
@@ -43,9 +46,14 @@ class SPDNet(LightningModule):
         )
 
         is_binary = num_classes == 1
-        self.loss_fn = bce if is_binary else ce
+        loss_fn = bce if is_binary else ce
+        self.loss_fn = partial(loss_fn, reduction="none")
         task = "binary" if is_binary else "multiclass"
+
+        self.train_loss = Mean()
         self.train_accuracy = Accuracy(task, num_classes=num_classes)
+
+        self.val_loss = self.train_loss.clone()
         self.val_accuracy = self.train_accuracy.clone()
 
     def training_step(self, batch, batch_idx):
@@ -53,24 +61,26 @@ class SPDNet(LightningModule):
         y_hat = self.model(x)
 
         loss = self.loss_fn(y_hat, y)
+        self.train_loss(loss)
         self.train_accuracy(y_hat, y)
 
-        self.log("train_loss", loss, on_epoch=True, prog_bar=True)
-        self.log("train_accuracy", self.train_accuracy, on_epoch=True, prog_bar=True)
+        self.log("train_loss", self.train_loss, on_epoch=True, on_step=True, prog_bar=True)
+        self.log("train_accuracy", self.train_accuracy, on_epoch=True, on_step=True, prog_bar=True)
 
-        return loss
+        return loss.mean()
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self.model(x)
 
         loss = self.loss_fn(y_hat, y)
+        self.val_loss(loss)
         self.val_accuracy(y_hat, y)
 
-        self.log("val_loss", loss, on_epoch=True, prog_bar=True)
+        self.log("val_loss", self.val_loss, on_epoch=True, prog_bar=True)
         self.log("val_accuracy", self.val_accuracy, on_epoch=True, prog_bar=True)
 
-        return loss
+        return loss.mean()
 
 
 class USPDNet(LightningModule):
@@ -108,9 +118,18 @@ class USPDNet(LightningModule):
         self.trade_off = trade_off
 
         is_binary = num_classes == 1
-        self.loss_fn = bce if is_binary else ce
+        loss_fn = bce if is_binary else ce
+        self.loss_fn = partial(loss_fn, reduction="none")
         task = "binary" if is_binary else "multiclass"
+
+        self.train_loss = Mean()
+        self.train_clf_loss = Mean()
+        self.train_rec_loss = Mean()
         self.train_accuracy = Accuracy(task, num_classes=num_classes)
+
+        self.val_loss = self.train_loss.clone()
+        self.val_clf_loss = self.train_clf_loss.clone()
+        self.val_rec_loss = self.train_rec_loss.clone()
         self.val_accuracy = self.train_accuracy.clone()
 
     def training_step(self, batch, batch_idx):
@@ -118,29 +137,37 @@ class USPDNet(LightningModule):
         x_hat, y_hat = self.model(x)
 
         clf_loss = self.loss_fn(y_hat, y)
-        rec_loss = (distance(x_hat, x, metric="euc") ** 2).mean()
+        rec_loss = distance(x_hat, x, metric="euc") ** 2
         loss = clf_loss + self.trade_off * rec_loss
+
+        self.train_loss(loss)
+        self.train_clf_loss(clf_loss)
+        self.train_rec_loss(rec_loss)
         self.train_accuracy(y_hat, y)
 
-        self.log("train_clf_loss", clf_loss, on_epoch=True, prog_bar=True)
-        self.log("train_rec_loss", rec_loss, on_epoch=True, prog_bar=True)
-        self.log("train_loss", loss, on_epoch=True, prog_bar=True)
-        self.log("train_accuracy", self.train_accuracy, on_epoch=True, prog_bar=True)
+        self.log("train_loss", self.train_loss, on_epoch=True, on_step=True, prog_bar=True)
+        self.log("train_clf_loss", self.train_clf_loss, on_epoch=True, on_step=True, prog_bar=True)
+        self.log("train_rec_loss", self.train_rec_loss, on_epoch=True, on_step=True, prog_bar=True)
+        self.log("train_accuracy", self.train_accuracy, on_epoch=True, on_step=True, prog_bar=True)
 
-        return loss
+        return loss.mean()
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
         x_hat, y_hat = self.model(x)
 
         clf_loss = self.loss_fn(y_hat, y)
-        rec_loss = (distance(x_hat, x, metric="euc") ** 2).mean()
+        rec_loss = distance(x_hat, x, metric="euc") ** 2
         loss = clf_loss + self.trade_off * rec_loss
+
+        self.val_loss(loss)
+        self.val_clf_loss(clf_loss)
+        self.val_rec_loss(rec_loss)
         self.val_accuracy(y_hat, y)
 
-        self.log("val_clf_loss", clf_loss, on_epoch=True, prog_bar=True)
-        self.log("val_rec_loss", rec_loss, on_epoch=True, prog_bar=True)
-        self.log("val_loss", loss, on_epoch=True, prog_bar=True)
+        self.log("val_loss", self.val_loss, on_epoch=True, prog_bar=True)
+        self.log("val_clf_loss", self.val_clf_loss, on_epoch=True, prog_bar=True)
+        self.log("val_rec_loss", self.val_rec_loss, on_epoch=True, prog_bar=True)
         self.log("val_accuracy", self.val_accuracy, on_epoch=True, prog_bar=True)
 
-        return loss
+        return loss.mean()
