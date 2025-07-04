@@ -67,7 +67,7 @@ class SPDNet(LightningModule):
         self.log("train_loss", self.train_loss, on_epoch=True, on_step=True, prog_bar=True)
         self.log("train_accuracy", self.train_accuracy, on_epoch=True, on_step=True, prog_bar=True)
 
-        return loss.mean()
+        return loss.sum()
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
@@ -80,7 +80,7 @@ class SPDNet(LightningModule):
         self.log("val_loss", self.val_loss, on_epoch=True, prog_bar=True)
         self.log("val_accuracy", self.val_accuracy, on_epoch=True, prog_bar=True)
 
-        return loss.mean()
+        return loss.sum()
 
 
 class USPDNet(LightningModule):
@@ -150,7 +150,7 @@ class USPDNet(LightningModule):
         self.log("train_rec_loss", self.train_rec_loss, on_epoch=True, on_step=True, prog_bar=True)
         self.log("train_accuracy", self.train_accuracy, on_epoch=True, on_step=True, prog_bar=True)
 
-        return loss.mean()
+        return loss.sum()
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
@@ -170,4 +170,4 @@ class USPDNet(LightningModule):
         self.log("val_rec_loss", self.val_rec_loss, on_epoch=True, prog_bar=True)
         self.log("val_accuracy", self.val_accuracy, on_epoch=True, prog_bar=True)
 
-        return loss.mean()
+        return loss.sum()
