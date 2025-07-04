@@ -53,10 +53,10 @@ class SPDNet(LightningModule):
         y_hat = self.model(x)
 
         loss = self.loss_fn(y_hat, y)
-        accuracy = self.train_accuracy(y_hat, y)
+        self.train_accuracy(y_hat, y)
 
         self.log("train_loss", loss, on_epoch=True, prog_bar=True)
-        self.log("train_accuracy", accuracy, on_epoch=True, prog_bar=True)
+        self.log("train_accuracy", self.train_accuracy, on_epoch=True, prog_bar=True)
 
         return loss
 
@@ -65,10 +65,10 @@ class SPDNet(LightningModule):
         y_hat = self.model(x)
 
         loss = self.loss_fn(y_hat, y)
-        accuracy = self.val_accuracy(y_hat, y)
+        self.val_accuracy(y_hat, y)
 
         self.log("val_loss", loss, on_epoch=True, prog_bar=True)
-        self.log("val_accuracy", accuracy, on_epoch=True, prog_bar=True)
+        self.log("val_accuracy", self.val_accuracy, on_epoch=True, prog_bar=True)
 
         return loss
 
@@ -120,12 +120,12 @@ class USPDNet(LightningModule):
         clf_loss = self.loss_fn(y_hat, y)
         rec_loss = (distance(x_hat, x, metric="euc") ** 2).mean()
         loss = clf_loss + self.trade_off * rec_loss
-        accuracy = self.train_accuracy(y_hat, y)
+        self.train_accuracy(y_hat, y)
 
         self.log("train_clf_loss", clf_loss, on_epoch=True, prog_bar=True)
         self.log("train_rec_loss", rec_loss, on_epoch=True, prog_bar=True)
         self.log("train_loss", loss, on_epoch=True, prog_bar=True)
-        self.log("train_accuracy", accuracy, on_epoch=True, prog_bar=True)
+        self.log("train_accuracy", self.train_accuracy, on_epoch=True, prog_bar=True)
 
         return loss
 
@@ -136,11 +136,11 @@ class USPDNet(LightningModule):
         clf_loss = self.loss_fn(y_hat, y)
         rec_loss = (distance(x_hat, x, metric="euc") ** 2).mean()
         loss = clf_loss + self.trade_off * rec_loss
-        accuracy = self.train_accuracy(y_hat, y)
+        self.val_accuracy(y_hat, y)
 
         self.log("val_clf_loss", clf_loss, on_epoch=True, prog_bar=True)
         self.log("val_rec_loss", rec_loss, on_epoch=True, prog_bar=True)
         self.log("val_loss", loss, on_epoch=True, prog_bar=True)
-        self.log("val_accuracy", accuracy, on_epoch=True, prog_bar=True)
+        self.log("val_accuracy", self.val_accuracy, on_epoch=True, prog_bar=True)
 
         return loss
