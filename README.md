@@ -8,12 +8,12 @@ In this repository, I provide my attempt to reproduce [Wang et al. (2023)](https
 - I used Riemannian Adam instead of SGD to ensure quick convergence.
 
 For U-SPDNet, the results are quite far from the original paper's result, where I obtained:
-|    Model   | Accuracy |
-| :--------- | :------: |
-|   SPDNet   |  0.8557  |
-|  SPDNetBN  |  **0.8713**  |
-|  U-SPDNet  |  0.7791  |
-| U-SPDNetBN |  0.8122  |
+|    Model   |   Accuracy   |
+| :--------- | :----------: |
+|   SPDNet   |    0.8504    |
+|  SPDNetBN  |  **0.8678**  |
+|  U-SPDNet  |    0.7809    |
+| U-SPDNetBN |    0.8017    |
 
 One of the odd things I found for my reconstruction loss is the large values that can go over `10^9`, which potentially could be the reason why
 U-SPDNet may perform worse in my reproduction, while the training curve for U-SPDNet in the original paper has the highest loss of less than 10.
