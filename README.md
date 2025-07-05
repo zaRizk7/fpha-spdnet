@@ -13,7 +13,7 @@ For U-SPDNet, the results are quite far from the original paper's result, where 
 |   SPDNet   |    0.8504    |
 |  SPDNetBN  |  **0.8678**  |
 |  U-SPDNet  |    0.7809    |
-| U-SPDNetBN |    0.8017    |
+| U-SPDNetBN |    0.8522    |
 
 One of the odd things I found for my reconstruction loss is the large values that can go over `10^9`, which potentially could be the reason why
 U-SPDNet may perform worse in my reproduction, while the training curve for U-SPDNet in the original paper has the highest loss of less than 10.
